@@ -9,4 +9,6 @@
     <!-- NO ITEMS MESSAGES-->
     <string name="empty_steps">No steps yet</string>
     <string name="empty_ingredients">No ingredients yet</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
