@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Baking App</string>
+    <string name="title_step_list">Steps</string>
+    <string name="title_step_detail">Step Detail</string>
+
+    <!-- ERROR MESSAGES -->
+    <string name="error_message">I was unable to fetch your recipes. Would you like some coffee instead?</string>
+
+    <!-- NO ITEMS MESSAGES-->
+    <string name="empty_steps">No steps yet</string>
+    <string name="empty_ingredients">No ingredients yet</string>
 </resources>
