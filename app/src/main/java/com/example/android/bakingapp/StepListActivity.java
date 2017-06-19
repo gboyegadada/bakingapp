@@ -166,19 +166,14 @@ public class StepListActivity extends AppCompatActivity {
 
     }
 
-
     private void setupRecyclerView() {
         assert mRecipe != null;
-        if (mRecipe == null) Log.d(TAG, "--------- mRecipe is NULL");
-
         mStepsAdapter = new StepsRecyclerViewAdapter(this, new StepsRecyclerViewListener());
 
         assert mStepsAdapter != null;
-        if (mStepsAdapter == null) Log.d(TAG, "--------- mStepsAdapter is NULL");
         StepList steps = mRecipe.getSteps();
 
         assert steps != null;
-        if (steps == null) Log.d(TAG, "--------- steps is NULL");
         mStepsAdapter.setData(steps);
 
         assert mRecyclerView != null;

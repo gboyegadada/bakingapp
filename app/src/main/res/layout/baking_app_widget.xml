@@ -1,21 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#09C"
+    android:background="#FFF"
     android:padding="@dimen/widget_margin">
 
     <TextView
-        android:id="@+id/appwidget_text"
+        android:id="@+id/tv_widget_heading"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widget_heading_height"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/colorWhite"
+        android:paddingLeft="@dimen/widget_heading_padding_left_right"
+        android:paddingRight="@dimen/widget_heading_padding_left_right"
+        android:paddingTop="@dimen/widget_heading_padding_top_bottom"
+        android:paddingBottom="@dimen/widget_heading_padding_top_bottom"
+        android:text="@string/app_name"/>
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/lv_ingredients"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/widget_list_margin_top"
+        android:layout_marginLeft="@dimen/widget_list_margin_left_right"
+        android:layout_marginRight="@dimen/widget_list_margin_left_right"
+        tools:context="com.example.android.bakingapp.BakingAppWidget"
+        tools:listitem="@layout/ingredient_list_item" />
+
+    <TextView
+        android:id="@+id/tv_empty_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:background="#09C"
-        android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
+        android:layout_margin="@dimen/text_margin"
+        android:text="@string/empty_ingredients"
+        android:textAppearance="?attr/textAppearanceListItem" />
+    <!--@null remove background and make the button transparent-->
+    <Button
+        android:id ="@+id/bt_see_more"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widget_button_height"
+        android:paddingLeft="@dimen/widget_button_padding_left_right"
+        android:paddingRight="@dimen/widget_button_padding_left_right"
+        android:paddingTop="@dimen/widget_button_padding_top_bottom"
+        android:paddingBottom="@dimen/widget_button_padding_top_bottom"
+        android:text="@string/appwidget_see_more"
+        android:background="@drawable/button_bg_transparent"
+        android:textColor="@color/colorPrimary"
+        android:padding="15dp"
+        />
 
 </RelativeLayout>

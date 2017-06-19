@@ -9,6 +9,12 @@
     <!-- NO ITEMS MESSAGES-->
     <string name="empty_steps">No steps yet</string>
     <string name="empty_ingredients">No ingredients yet</string>
-    <string name="appwidget_text">EXAMPLE</string>
+
+    <!-- APP WIDGET -->
+    <string name="appwidget_text">Choose recipe</string>
     <string name="add_widget">Add widget</string>
+    <string name="appwidget_config_title">Choose recipe</string>
+    <string name="appwidget_see_more">Go to app</string>
+
+    <string name="widget_shared_preference_key">com.example.android.bakingapp.BakingAppWidget</string>
 </resources>

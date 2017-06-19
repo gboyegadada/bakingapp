@@ -15,6 +15,7 @@ class RecipesRecyclerViewAdapter  extends RecyclerView.Adapter<RecipesRecyclerVi
 
     private Context mContext;
     private RecipeList mRecipes;
+    private int mItemResourceId = R.layout.recipe_card;
     private final MainActivity.OnItemClickListener mClickListener;
 
     static final String RECIPE_NAME_KEY = "name";
@@ -49,7 +50,7 @@ class RecipesRecyclerViewAdapter  extends RecyclerView.Adapter<RecipesRecyclerVi
         mContext = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(mContext);
         boolean shouldAttachToParentImmediately = false;
-        View recipeTileView = inflater.inflate(R.layout.recipe_card, parent, shouldAttachToParentImmediately);
+        View recipeTileView = inflater.inflate(mItemResourceId, parent, shouldAttachToParentImmediately);
 
         return new ItemViewHolder(recipeTileView);
     }
@@ -65,6 +66,12 @@ class RecipesRecyclerViewAdapter  extends RecyclerView.Adapter<RecipesRecyclerVi
     public int getItemCount() {
         if (null == mRecipes) return 0;
         return mRecipes.size();
+    }
+
+    // This will allow us to set a custom resource for the list items
+    // when reusing our adapter in the AppWidget layout.
+    public void setListItemResourceId(int resourceId) {
+        mItemResourceId = resourceId;
     }
 
     public void setData(RecipeList data) {

@@ -21,6 +21,7 @@ public class RecipeItem {
 
     public RecipeItem(JSONObject json) {
         try {
+            this.id = json.getInt("id");
             this.name = json.getString("name");
             this.ingredients = json.getJSONArray("ingredients").toString();
             this.steps = json.getJSONArray("steps").toString();

@@ -10,7 +10,7 @@ import org.parceler.Parcel;
 
 @Parcel
 public class IngredientItem {
-    int quantity;
+    String quantity;
     String measure;
     String ingredient;
 
@@ -19,7 +19,7 @@ public class IngredientItem {
 
     public IngredientItem(JSONObject json) {
         try {
-            this.quantity = json.getInt("id");
+            this.quantity = json.getString("quantity");
             this.measure = json.getString("measure");
             this.ingredient = json.getString("ingredient");
         } catch (JSONException e) {
@@ -28,7 +28,7 @@ public class IngredientItem {
 
     }
 
-    public int getQuantity() {
+    public String getQuantity() {
         return quantity;
     }
 
@@ -40,7 +40,7 @@ public class IngredientItem {
         return ingredient;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(String quantity) {
         this.quantity = quantity;
     }
 
