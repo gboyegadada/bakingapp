@@ -35,12 +35,16 @@ public class StepListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
     private StepsRecyclerViewAdapter mStepsAdapter;
-    private RecyclerView mRecyclerView;
-    public static LinearLayoutManager.SavedState mBundleRecyclerViewState;
+    private IngredientsRecyclerViewAdapter mIngredientsAdapter;
+    private RecyclerView mStepsRecyclerView;
+    private RecyclerView mIngredientsRecyclerView;
+    public static LinearLayoutManager.SavedState mBundleStepsRecyclerViewState;
+    public static LinearLayoutManager.SavedState mBundleIngredientsRecyclerViewState;
     private RecipeItem mRecipe;
 
     private static String TAG = StepListActivity.class.getSimpleName();
-    private static final String LIST_INSTANCE_STATE = "list_instance_state";
+    private static final String STEP_LIST_INSTANCE_STATE = "step_list_instance_state";
+    private static final String INGREDIENT_LIST_INSTANCE_STATE = "ingredient_list_instance_state";
     public static final String ARG_RECIPE_ITEM = "recipe_data";
 
     @Override
@@ -58,22 +62,17 @@ public class StepListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.step_list);
-        assert mRecyclerView != null;
+        mStepsRecyclerView = (RecyclerView) findViewById(R.id.step_list);
+        assert mStepsRecyclerView != null;
+
+        mIngredientsRecyclerView = (RecyclerView) findViewById(R.id.ingredient_list);
+        assert mIngredientsRecyclerView != null;
 
         if (findViewById(R.id.step_detail_container) != null) {
             // The detail container view will be present only in the
@@ -82,12 +81,26 @@ public class StepListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
-        setupRecyclerView();
+        setupStepsRecyclerView();
+        setupIngredientsRecyclerView();
+
+        // If in two pane mode, navigate to recipe intro
+        if (mTwoPane) {
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(StepDetailFragment.ARG_STEP_ITEM, Parcels.wrap(mRecipe.getSteps().get(0)));
+            arguments.putParcelable(StepListActivity.ARG_RECIPE_ITEM, Parcels.wrap(mRecipe));
+            StepDetailFragment fragment = new StepDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.step_detail_container, fragment)
+                    .commit();
+        }
     }
 
     private void handleSavedInstanceState(Bundle savedInstanceState) {
         if (null != savedInstanceState && savedInstanceState.containsKey(ARG_RECIPE_ITEM)) {
-            this.mBundleRecyclerViewState = savedInstanceState.getParcelable(LIST_INSTANCE_STATE);
+            this.mBundleStepsRecyclerViewState = savedInstanceState.getParcelable(STEP_LIST_INSTANCE_STATE);
+            this.mBundleIngredientsRecyclerViewState = savedInstanceState.getParcelable(INGREDIENT_LIST_INSTANCE_STATE);
             this.mRecipe = Parcels.unwrap(savedInstanceState.getParcelable(ARG_RECIPE_ITEM));
         }
     }
@@ -95,7 +108,8 @@ public class StepListActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(LIST_INSTANCE_STATE, mRecyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putParcelable(STEP_LIST_INSTANCE_STATE, mStepsRecyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putParcelable(INGREDIENT_LIST_INSTANCE_STATE, mIngredientsRecyclerView.getLayoutManager().onSaveInstanceState());
         outState.putParcelable(ARG_RECIPE_ITEM, Parcels.wrap(mRecipe));
     }
 
@@ -115,8 +129,11 @@ public class StepListActivity extends AppCompatActivity {
         }
 
         // restore RecyclerView state
-        if (mBundleRecyclerViewState != null) {
-            mRecyclerView.getLayoutManager().onRestoreInstanceState(mBundleRecyclerViewState);
+        if (mBundleStepsRecyclerViewState != null) {
+            mStepsRecyclerView.getLayoutManager().onRestoreInstanceState(mBundleStepsRecyclerViewState);
+        }
+        if (mBundleIngredientsRecyclerViewState != null) {
+            mIngredientsRecyclerView.getLayoutManager().onRestoreInstanceState(mBundleIngredientsRecyclerViewState);
         }
     }
 
@@ -132,6 +149,7 @@ public class StepListActivity extends AppCompatActivity {
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
             NavUtils.navigateUpFromSameTask(this);
+            overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -161,12 +179,13 @@ public class StepListActivity extends AppCompatActivity {
                 intent.putExtra(StepListActivity.ARG_RECIPE_ITEM, Parcels.wrap(mRecipe));
 
                 context.startActivity(intent);
+                overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
             }
         }
 
     }
 
-    private void setupRecyclerView() {
+    private void setupStepsRecyclerView() {
         assert mRecipe != null;
         mStepsAdapter = new StepsRecyclerViewAdapter(this, new StepsRecyclerViewListener());
 
@@ -176,8 +195,22 @@ public class StepListActivity extends AppCompatActivity {
         assert steps != null;
         mStepsAdapter.setData(steps);
 
-        assert mRecyclerView != null;
-        mRecyclerView.setAdapter(mStepsAdapter);
+        assert mStepsRecyclerView != null;
+        mStepsRecyclerView.setAdapter(mStepsAdapter);
+    }
+
+    private void setupIngredientsRecyclerView() {
+        assert mRecipe != null;
+        mIngredientsAdapter = new IngredientsRecyclerViewAdapter(this);
+
+        assert mIngredientsAdapter != null;
+        IngredientList ingredients = mRecipe.getIngredients();
+
+        assert ingredients != null;
+        mIngredientsAdapter.setData(ingredients);
+
+        assert mIngredientsRecyclerView != null;
+        mIngredientsRecyclerView.setAdapter(mIngredientsAdapter);
     }
 
 }

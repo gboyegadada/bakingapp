@@ -22,7 +22,7 @@ import retrofit2.Retrofit;
  * Created by Gboyega.Dada on 6/18/2017.
  */
 
-public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory, Callback<RecipeList> {
+public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory {
 
     private static String TAG = WidgetListProvider.class.getSimpleName();
     public final static String DATA_URI = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
@@ -32,8 +32,6 @@ public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory
     private int mAppWidgetId;
     // private final BakingAppWidget.OnItemClickListener mClickListener;
 
-    RecipeList mRecipeList;
-    RecipesRecyclerViewAdapter mRecipesAdapter;
     TextView mErrorMessageDisplay;
     LinearLayoutManager mLayoutManager;
 
@@ -46,31 +44,17 @@ public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory
 
         // mErrorMessageDisplay = (TextView) context.findViewById(R.id.tv_error_message_display);
         mLayoutManager = new LinearLayoutManager(context);
-        mIngredients = new IngredientList("[]");
 
-        loadRecipes();
-    }
-
-    public void loadRecipes() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(DATA_URI)
-                .addConverterFactory(new CustomConverterFactory())
-                .build();
-
-        RecipeAPI recipeAPI = retrofit.create(RecipeAPI.class);
-
-        Call<RecipeList> call = recipeAPI.getRecipes();
-        call.enqueue(this);
+        populateListItems();
     }
 
     private void populateListItems() {
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                mContext.getString(R.string.widget_shared_preference_key),
-                Context.MODE_PRIVATE);
-        int recipeId = prefs.getInt(AppWidgetConfigureActivity.PREFS_RECIPE_ID_KEY + mAppWidgetId, 0);
 
-        Log.d(TAG, "Recipe ID: "+ recipeId);
-        mIngredients = mRecipeList.get(recipeId).getIngredients();
+        String recipe_json = Util.getTempFileContent(mContext, DATA_URI);
+        RecipeItem recipe = new RecipeItem(recipe_json);
+        mIngredients = recipe.getIngredients();
+
+        Log.d(TAG, "Recipe ID: "+ recipe.getId());
     }
 
 
@@ -81,7 +65,7 @@ public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public void onDataSetChanged() {
-
+        populateListItems();
     }
 
     @Override
@@ -119,7 +103,7 @@ public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public int getViewTypeCount() {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -132,24 +116,4 @@ public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory
         return false;
     }
 
-    @Override
-    public void onResponse(Call<RecipeList> call, Response<RecipeList> response) {
-        // mLoadingIndicator.setVisibility(View.INVISIBLE);
-
-        if(response.isSuccessful()) {
-            mRecipeList = response.body();
-            populateListItems();
-        } else {
-            mErrorMessageDisplay.setVisibility(View.VISIBLE);
-            Log.d(TAG, response.errorBody().toString());
-        }
-    }
-
-    @Override
-    public void onFailure(Call<RecipeList> call, Throwable t) {
-        // mLoadingIndicator.setVisibility(View.INVISIBLE);
-        mErrorMessageDisplay.setVisibility(View.VISIBLE);
-        Log.e(TAG, t.getMessage());
-        t.printStackTrace();
-    }
 }

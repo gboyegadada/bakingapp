@@ -17,10 +17,28 @@ public class RecipeItem {
     int servings;
     String image;
 
+    String json;
+
     public RecipeItem() {}
 
     public RecipeItem(JSONObject json) {
         try {
+            this.json = json.toString();
+            this.id = json.getInt("id");
+            this.name = json.getString("name");
+            this.ingredients = json.getJSONArray("ingredients").toString();
+            this.steps = json.getJSONArray("steps").toString();
+        } catch (JSONException e) {
+
+        }
+
+    }
+
+    public RecipeItem(String jsonString) {
+        try {
+            this.json = jsonString;
+
+            JSONObject json = new JSONObject(jsonString);
             this.id = json.getInt("id");
             this.name = json.getString("name");
             this.ingredients = json.getJSONArray("ingredients").toString();
@@ -55,6 +73,14 @@ public class RecipeItem {
         return image;
     }
 
+    public String getJson() {
+        return this.json;
+    }
+
+    public void setJson(String jsonString) {
+        this.json = jsonString;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -77,5 +103,10 @@ public class RecipeItem {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    @Override
+    public String toString() {
+        return json;
     }
 }

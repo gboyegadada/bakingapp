@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:layout_margin="0dp"
     android:padding="0dp"
+    android:background="@color/recipe_list_bg"
     tools:context="com.example.android.bakingapp.MainActivity">
 
     <android.support.v7.widget.RecyclerView

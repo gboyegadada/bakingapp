@@ -20,12 +20,15 @@ class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAda
     private final StepListActivity.OnItemClickListener mClickListener;
 
     static final String RECIPE_NAME_KEY = "name";
+    private static final int VIEW_TYPE_INTRO = 0;
+    private static final int VIEW_TYPE_STEP = 0;
 
 
     public StepsRecyclerViewAdapter(Context parent, StepListActivity.OnItemClickListener listener) {
 
         mContext = parent;
         mClickListener = listener;
+
     }
 
 
@@ -61,7 +64,10 @@ class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAda
         mContext = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(mContext);
         boolean shouldAttachToParentImmediately = false;
-        View recipeTileView = inflater.inflate(R.layout.step_list_content, parent, shouldAttachToParentImmediately);
+        int view_layout = (viewType == VIEW_TYPE_INTRO)
+                            ? R.layout.step_list_intro
+                            : R.layout.step_list_content;
+        View recipeTileView = inflater.inflate(view_layout, parent, shouldAttachToParentImmediately);
 
         return new ItemViewHolder(recipeTileView);
     }
@@ -71,6 +77,13 @@ class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAda
         holder.mItem = mSteps.get(position);
         holder.mIdView.setText(""+holder.mItem.getId());
         holder.mContentView.setText(holder.mItem.getDescription());
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position == 0)
+                ? VIEW_TYPE_INTRO // This is the intro
+                : VIEW_TYPE_STEP; // This is a step
     }
 
     @Override

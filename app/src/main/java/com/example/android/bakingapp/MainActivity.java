@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements Callback<RecipeLi
     private static String TAG = MainActivity.class.getSimpleName();
     public final static String DATA_URI = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
 
-    private static final int GRID_SPAN_COUNT_PHONE = 1;
+    private static final int GRID_SPAN_COUNT_PHONE = 2;
     private static final int GRID_SPAN_COUNT_TABLET = 3;
     private static final String LIST_INSTANCE_STATE = "list_instance_state";
     private static final String RECIPES_JSON_STRING = "recipes_json_string";
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements Callback<RecipeLi
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-        mLayoutManager = new GridLayoutManager(this, GRID_SPAN_COUNT_TABLET);
+        mLayoutManager = new GridLayoutManager(this, GRID_SPAN_COUNT_PHONE);
 
         mRecipesAdapter = new RecipesRecyclerViewAdapter(this, new RecipesRecyclerViewListener());
 

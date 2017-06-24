@@ -81,14 +81,16 @@ public class AppWidgetConfigureActivity extends AppCompatActivity implements Cal
 
     }
 
-    static void saveSelectedRecipePref(Context context, int appWidgetId, int recipeId) {
+    static void saveSelectedRecipePref(Context context, int appWidgetId, RecipeItem recipe) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(
                 context.getString(R.string.widget_shared_preference_key),
                 Context.MODE_PRIVATE).edit();
-        prefs.putInt(PREFS_RECIPE_ID_KEY + appWidgetId, recipeId);
+        prefs.putInt(PREFS_RECIPE_ID_KEY + appWidgetId, recipe.getId());
         prefs.commit();
 
-        Log.d(TAG, "Recipe ID saved: "+recipeId);
+        Util.putTempFileContent(context, DATA_URI, recipe.toString());
+
+        Log.d(TAG, "Recipe ID saved: "+recipe.getId());
     }
 
     public void loadRecipes() {
@@ -131,7 +133,7 @@ public class AppWidgetConfigureActivity extends AppCompatActivity implements Cal
         @Override
         public void onClick(View view, RecipeItem item) {
             Context context = AppWidgetConfigureActivity.this;
-            saveSelectedRecipePref(context, mAppWidgetId, item.getId());
+            saveSelectedRecipePref(context, mAppWidgetId, item);
 
             // Push widget update to the surface with new prefs
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

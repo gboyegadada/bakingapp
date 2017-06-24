@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/tv_recipe_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
-</LinearLayout>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/recipe_list_bg">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="@dimen/recipe_item_margin"
+        android:paddingTop="@dimen/recipe_item_padding_top_bottom"
+        android:paddingBottom="@dimen/recipe_item_padding_top_bottom"
+        android:paddingLeft="@dimen/recipe_item_padding_left_right"
+        android:paddingRight="@dimen/recipe_item_padding_left_right"
+        android:background="@drawable/bg_with_rounded_corner">
+        <ImageView
+            android:layout_width="@dimen/recipe_icon_width_height"
+            android:layout_height="@dimen/recipe_icon_width_height"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/ic_recipe"/>
+        <TextView
+            android:id="@+id/tv_recipe_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:paddingTop="@dimen/recipe_item_label_padding_top_bottom"
+            android:paddingBottom="@dimen/recipe_item_label_padding_top_bottom"
+            android:paddingLeft="@dimen/recipe_item_label_padding_left_right"
+            android:paddingRight="@dimen/recipe_item_label_padding_left_right"
+            android:textColor="@color/colorWhite"
+            android:textAlignment="center"
+            android:textSize="@dimen/recipe_item_label_font_size"
+            android:background="@drawable/recipe_item_label_bg" />
+    </LinearLayout>
+    </LinearLayout>

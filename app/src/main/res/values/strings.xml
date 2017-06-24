@@ -16,5 +16,8 @@
     <string name="appwidget_config_title">Choose recipe</string>
     <string name="appwidget_see_more">Go to app</string>
 
+    <string name="ingredients_list_heading">Ingredients list:</string>
+    <string name="ingredients_list_bullet" translatable="false">&#8226;</string>
+
     <string name="widget_shared_preference_key">com.example.android.bakingapp.BakingAppWidget</string>
 </resources>

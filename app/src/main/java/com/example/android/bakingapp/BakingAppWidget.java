@@ -38,12 +38,13 @@ public class BakingAppWidget extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
     public void onAppWidgetOptionsChanged (Context context, AppWidgetManager appWidgetManager,
-                                           int appWidgetId, Bundle newOPtions) {
-        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOPtions);
+                                           int appWidgetId, Bundle newOptions) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
 
     }
 
