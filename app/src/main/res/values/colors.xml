@@ -10,4 +10,6 @@
     <color name="recipe_item_bg">#ffffff</color>
     <color name="recipe_item_border_color">#c2c3c8</color>
     <color name="recipe_item_label_border_color">#ffffff</color>
+
+    <color name="widget_border_color">#ffffff</color>
 </resources>

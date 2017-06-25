@@ -1,5 +1,6 @@
 package com.example.android.bakingapp;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -7,11 +8,14 @@ import android.content.SharedPreferences;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import android.widget.TextView;
+
+import org.parceler.Parcels;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +33,7 @@ public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory
 
     private Context mContext;
     private IngredientList mIngredients;
+    private RecipeItem mRecipe;
     private int mAppWidgetId;
     // private final BakingAppWidget.OnItemClickListener mClickListener;
 
@@ -51,10 +56,17 @@ public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory
     private void populateListItems() {
 
         String recipe_json = Util.getTempFileContent(mContext, DATA_URI);
-        RecipeItem recipe = new RecipeItem(recipe_json);
-        mIngredients = recipe.getIngredients();
 
-        Log.d(TAG, "Recipe ID: "+ recipe.getId());
+        if (!TextUtils.isEmpty(recipe_json)) {
+            mRecipe = new RecipeItem(recipe_json);
+            mIngredients = mRecipe.getIngredients();
+
+            Log.d(TAG, "Recipe ID: " + mRecipe.getId());
+        } else {
+
+            Log.d(TAG, "Recipe ID: File could not be read");
+
+        }
     }
 
 
@@ -85,13 +97,13 @@ public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory
                 R.layout.ingredient_list_item);
         IngredientItem item = mIngredients.get(i);
 
-        remoteView.setTextViewText(R.id.tv_id, ""+i);
-        remoteView.setTextViewText(R.id.tv_measure, item.getQuantity()+" "+item.getMeasure());
-        remoteView.setTextViewText(R.id.tv_ingredient, item.getIngredient());
+        remoteView.setTextViewText(R.id.tv_id, String.valueOf(i+1));
+        String text = item.getIngredient() + " (" + item.getQuantity()+" "+item.getMeasure() + ")";
+        remoteView.setTextViewText(R.id.tv_ingredient, text);
 
-        // remoteView.setOnClickPendingIntent(
-        //
-        // );
+        Intent fillInIntent = new Intent();
+        fillInIntent.putExtra(StepListActivity.ARG_RECIPE_ITEM, Parcels.wrap(mRecipe));
+        remoteView.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
 
         return remoteView;
     }

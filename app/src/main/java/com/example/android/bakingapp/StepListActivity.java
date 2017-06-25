@@ -74,13 +74,13 @@ public class StepListActivity extends AppCompatActivity {
         mIngredientsRecyclerView = (RecyclerView) findViewById(R.id.ingredient_list);
         assert mIngredientsRecyclerView != null;
 
-        if (findViewById(R.id.step_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
+        // isTablet will be set to true only in the
+        // large-screen values xml (res/values-sw900dp/bools.xml)
+        // and set to false in res/values/bools.xml
+        // If set to true, then the
+        // activity should be in two-pane mode.
+        mTwoPane = getResources().getBoolean(R.bool.isTablet);
+
         setupStepsRecyclerView();
         setupIngredientsRecyclerView();
 
@@ -99,8 +99,8 @@ public class StepListActivity extends AppCompatActivity {
 
     private void handleSavedInstanceState(Bundle savedInstanceState) {
         if (null != savedInstanceState && savedInstanceState.containsKey(ARG_RECIPE_ITEM)) {
-            this.mBundleStepsRecyclerViewState = savedInstanceState.getParcelable(STEP_LIST_INSTANCE_STATE);
-            this.mBundleIngredientsRecyclerViewState = savedInstanceState.getParcelable(INGREDIENT_LIST_INSTANCE_STATE);
+            mBundleStepsRecyclerViewState = savedInstanceState.getParcelable(STEP_LIST_INSTANCE_STATE);
+            mBundleIngredientsRecyclerViewState = savedInstanceState.getParcelable(INGREDIENT_LIST_INSTANCE_STATE);
             this.mRecipe = Parcels.unwrap(savedInstanceState.getParcelable(ARG_RECIPE_ITEM));
         }
     }

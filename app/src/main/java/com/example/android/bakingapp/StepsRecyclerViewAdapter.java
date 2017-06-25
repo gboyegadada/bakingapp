@@ -2,8 +2,11 @@ package com.example.android.bakingapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +46,7 @@ class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAda
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
+
             mContentView = (TextView) view.findViewById(R.id.content);
             view.setOnClickListener(this);
         }
@@ -76,7 +80,13 @@ class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAda
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         holder.mItem = mSteps.get(position);
         holder.mIdView.setText(""+holder.mItem.getId());
-        holder.mContentView.setText(holder.mItem.getDescription());
+
+
+        Spanned content = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                ? Html.fromHtml(holder.mItem.getDescription(), Html.FROM_HTML_MODE_COMPACT)
+                : Html.fromHtml(holder.mItem.getDescription());
+
+        holder.mContentView.setText(content);
     }
 
     @Override

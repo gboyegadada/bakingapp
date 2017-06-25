@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_list_item"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/widget_list_item_margin_top_bottom"
@@ -9,17 +10,21 @@
         android:id="@+id/tv_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:textSize="@dimen/widget_list_item_index_size"
+        android:textColor="@color/colorWhite"/>
 
     <TextView
         android:id="@+id/tv_ingredient"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceListItem" />
-
+        android:textSize="@dimen/widget_list_item_size"
+        android:maxLines="20"
+        android:layout_marginLeft="@dimen/widget_list_item_margin_left_right"/>
+    <!--
     <TextView
         android:id="@+id/tv_measure"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:textSize="@dimen/widget_list_item_size" />
+        -->
 </LinearLayout>

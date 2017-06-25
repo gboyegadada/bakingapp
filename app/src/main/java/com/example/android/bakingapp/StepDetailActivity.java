@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -63,16 +64,6 @@ public class StepDetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.step_detail_container, fragment)
                     .commit();
-        }
-
-        String path = mItem.getThumbnailURL();
-
-        if (path.length() > 10) {
-            Picasso.with(this)
-                    .load(mItem.getThumbnailURL())
-                    .into((ImageView) findViewById(R.id.iv_header_bg));
-            // .placeholder(R.drawable.ic_movie_poster_placeholder)
-            // .error(R.drawable.ic_broken_image)
         }
 
     }

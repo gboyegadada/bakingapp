@@ -64,13 +64,12 @@ class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<IngredientsRec
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         holder.mItem = mIngredients.get(position);
 
-        String measure = " ("+holder.mItem.getMeasure() + ")";
-        holder.mMeasureView.setText(measure);
+        String measure = " ("+holder.mItem.getQuantity()+" "+holder.mItem.getMeasure() + ")";
 
         String ingredient =
                 Html.fromHtml(mContext.getString(R.string.ingredients_list_bullet)) +
                 " " +
-                holder.mItem.getIngredient();
+                holder.mItem.getIngredient() + measure;
         holder.mIngredientView.setText(ingredient);
     }
 

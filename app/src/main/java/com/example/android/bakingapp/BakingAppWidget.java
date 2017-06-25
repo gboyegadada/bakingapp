@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RemoteViews;
@@ -68,30 +69,30 @@ public class BakingAppWidget extends AppWidgetProvider {
         serviceIntent.setData(Uri.parse(
                 serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
-        Intent intent = new Intent(context, MainActivity.class);
-
-        // Creating a pending intent and wrapping our intent
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.bt_see_more, pendingIntent);
 
         remoteViews.setRemoteAdapter(R.id.lv_ingredients, serviceIntent);
         remoteViews.setEmptyView(R.id.lv_ingredients, R.id.tv_empty_view);
 
-        return remoteViews;
-    }
 
 
-    public interface OnItemClickListener {
-        void onClick(Context context, IngredientItem item);
-    }
+        String recipe_json = Util.getTempFileContent(context, MainActivity.DATA_URI);
 
-    private class RecipesRecyclerViewListener implements OnItemClickListener {
-        @Override
-        public void onClick(Context context, IngredientItem item) {
-            Intent intent = new Intent(context, MainActivity.class);
-            intent.putExtra(StepListActivity.ARG_RECIPE_ITEM, Parcels.wrap(item));
-            context.startActivity(intent);
+        if (!TextUtils.isEmpty(recipe_json)) {
+            RecipeItem recipe = new RecipeItem(recipe_json);
+            String title = recipe.getName() + " " + context.getString(R.string.widget_title_suffix);
+            remoteViews.setTextViewText(R.id.tv_widget_heading, title);
+
+
+            Intent intent = new Intent(context, StepListActivity.class);
+            intent.putExtra(StepListActivity.ARG_RECIPE_ITEM, Parcels.wrap(recipe));
+
+            // Creating a pending intent and wrapping our intent
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setPendingIntentTemplate(R.id.lv_ingredients, pendingIntent);
         }
+
+
+        return remoteViews;
     }
 
 }
