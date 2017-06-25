@@ -1,6 +1,10 @@
 package com.example.android.bakingapp;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -43,6 +47,11 @@ public class MainActivity extends AppCompatActivity implements Callback<RecipeLi
     public static LinearLayoutManager.SavedState mBundleRecyclerViewState;
     ProgressBar mLoadingIndicator;
 
+
+    // The Idling Resource which will be null in production.
+    @Nullable
+    private RecipesIdlingResource mIdlingResource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,11 +73,15 @@ public class MainActivity extends AppCompatActivity implements Callback<RecipeLi
         mRecyclerView.setAdapter(mRecipesAdapter);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        // Get the IdlingResource instance
+        getIdlingResource();
+
         loadRecipes();
     }
 
     public void loadRecipes() {
         mLoadingIndicator.setVisibility(View.VISIBLE);
+        mIdlingResource.setIdleState(false);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(DATA_URI)
@@ -82,6 +95,17 @@ public class MainActivity extends AppCompatActivity implements Callback<RecipeLi
     }
 
 
+    /**
+     * Only called from test, creates and returns a new {@link RecipesIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new RecipesIdlingResource();
+        }
+        return mIdlingResource;
+    }
 
     public interface OnItemClickListener {
         void onClick(View view, RecipeItem item);
@@ -100,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements Callback<RecipeLi
     @Override
     public void onResponse(Call<RecipeList> call, Response<RecipeList> response) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
+        mIdlingResource.setIdleState(true);
 
         if(response.isSuccessful()) {
             mRecipeList = response.body();
@@ -115,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements Callback<RecipeLi
     public void onFailure(Call<RecipeList> call, Throwable t) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
+        mIdlingResource.setIdleState(true);
+
         Log.e(TAG, t.getMessage());
         t.printStackTrace();
     }

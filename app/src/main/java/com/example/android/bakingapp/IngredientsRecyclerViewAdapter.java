@@ -66,10 +66,10 @@ class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<IngredientsRec
 
         String measure = " ("+holder.mItem.getQuantity()+" "+holder.mItem.getMeasure() + ")";
 
-        String ingredient =
-                Html.fromHtml(mContext.getString(R.string.ingredients_list_bullet)) +
-                " " +
-                holder.mItem.getIngredient() + measure;
+        String ingredient = holder.mItem.getIngredient() + measure;
+                // Html.fromHtml(mContext.getString(R.string.ingredients_list_bullet)) +
+                // " " +
+                // holder.mItem.getIngredient() + measure;
         holder.mIngredientView.setText(ingredient);
     }
 
