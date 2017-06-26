@@ -41,6 +41,7 @@ public class StepDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
         // (e.g. when rotating the screen from portrait to landscape).
@@ -53,6 +54,7 @@ public class StepDetailActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Parcelable itemParcel = getIntent().getParcelableExtra(StepDetailFragment.ARG_STEP_ITEM);
             mItem = Parcels.unwrap(itemParcel);
+            if (actionBar != null) actionBar.setTitle(mItem.getShortDescription());
 
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.

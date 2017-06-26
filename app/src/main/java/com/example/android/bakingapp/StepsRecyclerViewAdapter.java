@@ -7,10 +7,14 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Gboyega.Dada on 6/17/2017.
@@ -24,7 +28,7 @@ class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAda
 
     static final String RECIPE_NAME_KEY = "name";
     private static final int VIEW_TYPE_INTRO = 0;
-    private static final int VIEW_TYPE_STEP = 0;
+    private static final int VIEW_TYPE_STEP = 1;
 
 
     public StepsRecyclerViewAdapter(Context parent, StepListActivity.OnItemClickListener listener) {
@@ -38,16 +42,19 @@ class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAda
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final View mView;
-        public final TextView mIdView;
+        // public final TextView mIdView;
         public final TextView mContentView;
+        public final ImageView mThumbnailView;
         public StepItem mItem;
 
         public ItemViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
+            // mIdView = (TextView) view.findViewById(R.id.id);
 
             mContentView = (TextView) view.findViewById(R.id.content);
+            mThumbnailView = (ImageView) view.findViewById(R.id.step_thumbnail);
+
             view.setOnClickListener(this);
         }
 
@@ -79,7 +86,7 @@ class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAda
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         holder.mItem = mSteps.get(position);
-        holder.mIdView.setText(""+holder.mItem.getId());
+        // holder.mIdView.setText(""+holder.mItem.getId());
 
 
         Spanned content = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
@@ -87,6 +94,16 @@ class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAda
                 : Html.fromHtml(holder.mItem.getDescription());
 
         holder.mContentView.setText(content);
+
+        // Handle thumbnail
+        String thumbnailUrl = holder.mItem.getThumbnailURL();
+        if (!TextUtils.isEmpty(thumbnailUrl)) {
+            Picasso.with(mContext)
+                    .load(thumbnailUrl)
+                    .error(R.mipmap.ic_error)
+                    .placeholder(R.mipmap.ic_error)
+                    .into(holder.mThumbnailView);
+        }
     }
 
     @Override

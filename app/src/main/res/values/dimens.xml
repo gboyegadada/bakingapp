@@ -22,6 +22,9 @@
     <dimen name="recipe_item_padding_left_right">15dp</dimen>
 
 
+    <dimen name="step_list_item_size">14sp</dimen>
+
+
     <dimen name="ingredient_list_padding_left_right">20dp</dimen>
     <dimen name="ingredient_list_padding_top_bottom">20dp</dimen>
     <dimen name="ingredient_list_heading_size">18sp</dimen>

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
@@ -13,7 +14,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
@@ -41,19 +44,11 @@ import org.parceler.Parcels;
 public class StepDetailFragment extends Fragment {
 
     private SimpleExoPlayer mExoPlayer;
-    private SurfaceView mSurfaceView;
     private SimpleExoPlayerView mExoPlayerView;
 
     private boolean mShouldAutoPlay = true;
-    private int mResumeWindow;
-    private long mResumePosition;
 
-    private StepItem mStep;
     private Uri mVideoUri;
-    private int RENDERER_COUNT = 300000;
-    private int minBufferMs =    250000;
-    private final int BUFFER_SEGMENT_SIZE = 64 * 1024;
-    private final int BUFFER_SEGMENT_COUNT = 256;
 
     private String mUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:40.0) Gecko/20100101 Firefox/40.0";
 
@@ -65,10 +60,7 @@ public class StepDetailFragment extends Fragment {
     private StepItem mItem;
     private View mRootView;
 
-
     private static String TAG = StepDetailFragment.class.getSimpleName();
-    private TrackSelector mTrackSelector;
-    private TrackSelection mTrackSelectionHelper;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -92,6 +84,7 @@ public class StepDetailFragment extends Fragment {
             if (appBar != null) {
                 appBar.setTitle(mItem.getShortDescription());
             }
+
         }
     }
 
@@ -102,9 +95,12 @@ public class StepDetailFragment extends Fragment {
 
         if (mItem != null) {
             ((TextView) mRootView.findViewById(R.id.step_detail)).setText(mItem.getDescription());
-            mVideoUri = Uri.parse(mItem.getVideoURL());
 
-            initializePlayer();
+            String url = mItem.getVideoURL();
+            if (!TextUtils.isEmpty(url)) {
+                mVideoUri = Uri.parse(url);
+                initializePlayer();
+            }
         }
 
         return mRootView;
@@ -112,15 +108,19 @@ public class StepDetailFragment extends Fragment {
 
 
     private void initializePlayer() {
+        if (null != mExoPlayerView) {
+            // Already initialized
+            return;
+        }
+
+        // Otherwise initialize player
         mExoPlayerView = (SimpleExoPlayerView) getActivity().findViewById(R.id.sv_player);
 
-        // Measures bandwidth during playback. Can be null if not required.
-        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+        LoadControl loadControl = new DefaultLoadControl();
+        TrackSelector trackSelector = new DefaultTrackSelector();
 
         // Create the player
-        mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector);
+        mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
         mExoPlayerView = (SimpleExoPlayerView) mRootView.findViewById(R.id.sv_player);
 
         //Set media controller
@@ -133,81 +133,32 @@ public class StepDetailFragment extends Fragment {
         mExoPlayerView.setPlayer(mExoPlayer);
         mExoPlayer.setPlayWhenReady(mShouldAutoPlay);
 
-        // Produces DataSource instances through which media data is loaded.
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
-                mUserAgent);
-        // Produces Extractor instances for parsing the media data.
-        ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
         // This is the MediaSource representing the media to be played.
-        MediaSource videoSource = new ExtractorMediaSource(mVideoUri,
-                dataSourceFactory, extractorsFactory, null, null);
+        MediaSource videoSource = new ExtractorMediaSource(
+                mVideoUri,
+                new DefaultDataSourceFactory(getContext(), mUserAgent),
+                new DefaultExtractorsFactory(), null, null);
         // Prepare the player with the source.
         mExoPlayer.prepare(videoSource);
     }
 
-    /*
+
+    /**
+     * Release the player when the fragment activity is destroyed.
+     */
     @Override
-    public void onNewIntent(Intent intent) {
+    public void onDestroy() {
+        super.onDestroy();
         releasePlayer();
-        mShouldAutoPlay = true;
-        clearResumePosition();
-        setIntent(intent);
-    }
-    */
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (Util.SDK_INT > 23) {
-            initializePlayer();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if ((Util.SDK_INT <= 23 || mExoPlayer == null)) {
-            initializePlayer();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (Util.SDK_INT <= 23) {
-            releasePlayer();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (Util.SDK_INT > 23) {
-            releasePlayer();
-        }
     }
 
     private void releasePlayer() {
         if (mExoPlayer != null) {
-            mShouldAutoPlay = mExoPlayer.getPlayWhenReady();
-            updateResumePosition();
+            mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
-            mTrackSelector = null;
-            mTrackSelectionHelper = null;
-            // mEventLogger = null;
         }
     }
 
-    private void updateResumePosition() {
-        mResumeWindow = mExoPlayer.getCurrentWindowIndex();
-        mResumePosition = mExoPlayer.isCurrentWindowSeekable() ? Math.max(0, mExoPlayer.getCurrentPosition())
-                : C.TIME_UNSET;
-    }
-
-    private void clearResumePosition() {
-        mResumeWindow = C.INDEX_UNSET;
-        mResumePosition = C.TIME_UNSET;
-    }
 
 }
