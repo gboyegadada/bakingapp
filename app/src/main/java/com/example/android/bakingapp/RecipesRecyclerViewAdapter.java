@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by Gboyega.Dada on 6/15/2017.
  */
@@ -14,7 +16,7 @@ import android.widget.TextView;
 class RecipesRecyclerViewAdapter  extends RecyclerView.Adapter<RecipesRecyclerViewAdapter.ItemViewHolder> {
 
     private Context mContext;
-    private RecipeList mRecipes;
+    private ArrayList<RecipeItem> mRecipes;
     private int mItemResourceId = R.layout.recipe_card;
     private final MainActivity.OnItemClickListener mClickListener;
 
@@ -74,14 +76,14 @@ class RecipesRecyclerViewAdapter  extends RecyclerView.Adapter<RecipesRecyclerVi
         mItemResourceId = resourceId;
     }
 
-    public void setData(RecipeList data) {
+    public void setData(ArrayList<RecipeItem> data) {
         mRecipes = data;
 
         notifyDataSetChanged();
     }
 
     /*
-    public RecipeList getData() {
+    public ArrayList<RecipeItem> getData() {
         return mRecipes;
     }
     */

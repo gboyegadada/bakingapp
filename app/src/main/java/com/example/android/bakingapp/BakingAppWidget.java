@@ -16,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.parceler.Parcels;
 
 /**
@@ -78,7 +80,7 @@ public class BakingAppWidget extends AppWidgetProvider {
         String recipe_json = Util.getTempFileContent(context, MainActivity.DATA_URI);
 
         if (!TextUtils.isEmpty(recipe_json)) {
-            RecipeItem recipe = new RecipeItem(recipe_json);
+            RecipeItem recipe = (new Gson()).fromJson(recipe_json, RecipeItem.class);
             String title = recipe.getName() + " " + context.getString(R.string.widget_title_suffix);
             remoteViews.setTextViewText(R.id.tv_widget_heading, title);
 

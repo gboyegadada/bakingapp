@@ -13,12 +13,19 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AppWidgetConfigureActivity extends AppCompatActivity implements Callback<RecipeList> {
+public class AppWidgetConfigureActivity extends AppCompatActivity implements Callback<ArrayList<RecipeItem>> {
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private static String TAG = AppWidgetConfigureActivity.class.getSimpleName();
     public final static String DATA_URI = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
@@ -32,7 +39,7 @@ public class AppWidgetConfigureActivity extends AppCompatActivity implements Cal
      */
     private boolean mMode;
 
-    RecipeList mRecipeList;
+    ArrayList<RecipeItem> mRecipeList;
     RecyclerView mRecyclerView;
     RecipesRecyclerViewAdapter mRecipesAdapter;
     TextView mErrorMessageDisplay;
@@ -88,7 +95,7 @@ public class AppWidgetConfigureActivity extends AppCompatActivity implements Cal
         prefs.putInt(PREFS_RECIPE_ID_KEY + appWidgetId, recipe.getId());
         prefs.commit();
 
-        Util.putTempFileContent(context, DATA_URI, recipe.toString());
+        Util.putTempFileContent(context, DATA_URI, (new Gson()).toJson(recipe));
 
         Log.d(TAG, "Recipe ID saved: "+recipe.getId());
     }
@@ -96,19 +103,23 @@ public class AppWidgetConfigureActivity extends AppCompatActivity implements Cal
     public void loadRecipes() {
         mLoadingIndicator.setVisibility(View.VISIBLE);
 
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(DATA_URI)
-                .addConverterFactory(new CustomConverterFactory())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         RecipeAPI recipeAPI = retrofit.create(RecipeAPI.class);
 
-        Call<RecipeList> call = recipeAPI.getRecipes();
+        Call<ArrayList<RecipeItem>> call = recipeAPI.getRecipes();
         call.enqueue(this);
     }
 
     @Override
-    public void onResponse(Call<RecipeList> call, Response<RecipeList> response) {
+    public void onResponse(Call<ArrayList<RecipeItem>> call, Response<ArrayList<RecipeItem>> response) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
 
         if(response.isSuccessful()) {
@@ -122,7 +133,7 @@ public class AppWidgetConfigureActivity extends AppCompatActivity implements Cal
     }
 
     @Override
-    public void onFailure(Call<RecipeList> call, Throwable t) {
+    public void onFailure(Call<ArrayList<RecipeItem>> call, Throwable t) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
         Log.e(TAG, t.getMessage());

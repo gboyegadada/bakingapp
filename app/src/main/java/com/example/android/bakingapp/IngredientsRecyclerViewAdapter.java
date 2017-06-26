@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by Gboyega.Dada on 6/17/2017.
  */
@@ -15,7 +17,7 @@ import android.widget.TextView;
 class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<IngredientsRecyclerViewAdapter.ItemViewHolder> {
 
     private Context mContext;
-    private IngredientList mIngredients;
+    private ArrayList<IngredientItem> mIngredients;
 
     static final String RECIPE_NAME_KEY = "name";
     private static final int VIEW_TYPE_INTRO = 0;
@@ -79,7 +81,7 @@ class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<IngredientsRec
         return mIngredients.size();
     }
 
-    public void setData(IngredientList data) {
+    public void setData(ArrayList<IngredientItem> data) {
         mIngredients = data;
 
         notifyDataSetChanged();

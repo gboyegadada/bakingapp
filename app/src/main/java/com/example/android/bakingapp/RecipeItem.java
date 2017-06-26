@@ -1,8 +1,14 @@
 package com.example.android.bakingapp;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
+import org.parceler.ParcelPropertyConverter;
+
+import java.util.ArrayList;
 
 /**
  * Created by Gboyega.Dada on 6/15/2017.
@@ -10,44 +16,37 @@ import org.parceler.Parcel;
 
 @Parcel
 public class RecipeItem {
+
+
+    @SerializedName("id")
+    @Expose
     int id;
+
+    @SerializedName("name")
+    @Expose
     String name;
-    String ingredients;
-    String steps;
+
+    @ParcelPropertyConverter(IngredientListParcelConverter.class)
+    @SerializedName("ingredients")
+    @Expose
+    ArrayList<IngredientItem> ingredients;
+
+    @ParcelPropertyConverter(StepListParcelConverter.class)
+    @SerializedName("steps")
+    @Expose
+    ArrayList<StepItem> steps;
+
+    @SerializedName("servings")
+    @Expose
     int servings;
+
+    @SerializedName("image")
+    @Expose
     String image;
 
     String json;
 
     public RecipeItem() {}
-
-    public RecipeItem(JSONObject json) {
-        try {
-            this.json = json.toString();
-            this.id = json.getInt("id");
-            this.name = json.getString("name");
-            this.ingredients = json.getJSONArray("ingredients").toString();
-            this.steps = json.getJSONArray("steps").toString();
-        } catch (JSONException e) {
-
-        }
-
-    }
-
-    public RecipeItem(String jsonString) {
-        try {
-            this.json = jsonString;
-
-            JSONObject json = new JSONObject(jsonString);
-            this.id = json.getInt("id");
-            this.name = json.getString("name");
-            this.ingredients = json.getJSONArray("ingredients").toString();
-            this.steps = json.getJSONArray("steps").toString();
-        } catch (JSONException e) {
-
-        }
-
-    }
 
     public int getId() {
         return id;
@@ -57,12 +56,12 @@ public class RecipeItem {
         return name;
     }
 
-    public IngredientList getIngredients() {
-        return new IngredientList(ingredients);
+    public ArrayList<IngredientItem> getIngredients() {
+        return ingredients;
     }
 
-    public StepList getSteps() {
-        return new StepList(steps);
+    public ArrayList<StepItem> getSteps() {
+        return steps;
     }
 
     public int getServings() {
@@ -73,14 +72,6 @@ public class RecipeItem {
         return image;
     }
 
-    public String getJson() {
-        return this.json;
-    }
-
-    public void setJson(String jsonString) {
-        this.json = jsonString;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -89,11 +80,11 @@ public class RecipeItem {
         this.name = name;
     }
 
-    public void setIngredients(String ingredients) {
+    public void setIngredients(ArrayList<IngredientItem> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public void setSteps(String steps) {
+    public void setSteps(ArrayList<StepItem> steps) {
         this.steps = steps;
     }
 
@@ -103,10 +94,5 @@ public class RecipeItem {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    @Override
-    public String toString() {
-        return json;
     }
 }

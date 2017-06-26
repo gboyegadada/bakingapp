@@ -1,5 +1,8 @@
 package com.example.android.bakingapp;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
@@ -10,23 +13,20 @@ import org.parceler.Parcel;
 
 @Parcel
 public class IngredientItem {
+
+    @SerializedName("quantity")
+    @Expose
     String quantity;
+
+    @SerializedName("measure")
+    @Expose
     String measure;
+
+    @SerializedName("ingredient")
+    @Expose
     String ingredient;
 
-
     public IngredientItem() {}
-
-    public IngredientItem(JSONObject json) {
-        try {
-            this.quantity = json.getString("quantity");
-            this.measure = json.getString("measure");
-            this.ingredient = json.getString("ingredient");
-        } catch (JSONException e) {
-
-        }
-
-    }
 
     public String getQuantity() {
         return quantity;

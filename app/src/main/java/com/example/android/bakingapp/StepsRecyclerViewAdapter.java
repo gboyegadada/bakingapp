@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 /**
  * Created by Gboyega.Dada on 6/17/2017.
  */
@@ -23,7 +25,7 @@ import com.squareup.picasso.Picasso;
 class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAdapter.ItemViewHolder> {
 
     private Context mContext;
-    private StepList mSteps;
+    private ArrayList<StepItem> mSteps;
     private final StepListActivity.OnItemClickListener mClickListener;
 
     static final String RECIPE_NAME_KEY = "name";
@@ -119,7 +121,7 @@ class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAda
         return mSteps.size();
     }
 
-    public void setData(StepList data) {
+    public void setData(ArrayList<StepItem> data) {
         mSteps = data;
 
         notifyDataSetChanged();

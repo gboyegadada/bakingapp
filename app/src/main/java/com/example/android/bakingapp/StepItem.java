@@ -1,5 +1,8 @@
 package com.example.android.bakingapp;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
@@ -10,27 +13,29 @@ import org.parceler.Parcel;
 
 @Parcel
 public class StepItem {
+
+    @SerializedName("id")
+    @Expose
     int id;
+
+    @SerializedName("shortDescription")
+    @Expose
     String shortDescription;
+
+    @SerializedName("description")
+    @Expose
     String description;
+
+    @SerializedName("videoURL")
+    @Expose
     String videoURL;
+
+    @SerializedName("thumbnailURL")
+    @Expose
     String thumbnailURL;
 
 
     public StepItem() {}
-
-    public StepItem(JSONObject json) {
-        try {
-            this.id = json.getInt("id");
-            this.shortDescription = json.getString("shortDescription");
-            this.description = json.getString("description");
-            this.videoURL = json.getString("videoURL");
-            this.thumbnailURL = json.getString("thumbnailURL");
-        } catch (JSONException e) {
-
-        }
-
-    }
 
     public int getId() {
         return id;

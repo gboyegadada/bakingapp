@@ -15,7 +15,11 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,7 +36,7 @@ public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory
     public final static String DATA_URI = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
 
     private Context mContext;
-    private IngredientList mIngredients;
+    private ArrayList<IngredientItem> mIngredients;
     private RecipeItem mRecipe;
     private int mAppWidgetId;
     // private final BakingAppWidget.OnItemClickListener mClickListener;
@@ -58,7 +62,7 @@ public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory
         String recipe_json = Util.getTempFileContent(mContext, DATA_URI);
 
         if (!TextUtils.isEmpty(recipe_json)) {
-            mRecipe = new RecipeItem(recipe_json);
+            mRecipe = (new Gson()).fromJson(recipe_json, RecipeItem.class);
             mIngredients = mRecipe.getIngredients();
 
             Log.d(TAG, "Recipe ID: " + mRecipe.getId());

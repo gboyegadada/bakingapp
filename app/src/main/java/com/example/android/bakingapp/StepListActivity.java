@@ -19,6 +19,8 @@ import android.view.MenuItem;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
+
 /**
  * An activity representing a list of Steps. This activity
  * has different presentations for handset and tablet-size devices. On
@@ -190,7 +192,7 @@ public class StepListActivity extends AppCompatActivity {
         mStepsAdapter = new StepsRecyclerViewAdapter(this, new StepsRecyclerViewListener());
 
         assert mStepsAdapter != null;
-        StepList steps = mRecipe.getSteps();
+        ArrayList<StepItem> steps = mRecipe.getSteps();
 
         assert steps != null;
         mStepsAdapter.setData(steps);
@@ -204,7 +206,7 @@ public class StepListActivity extends AppCompatActivity {
         mIngredientsAdapter = new IngredientsRecyclerViewAdapter(this);
 
         assert mIngredientsAdapter != null;
-        IngredientList ingredients = mRecipe.getIngredients();
+        ArrayList<IngredientItem> ingredients = mRecipe.getIngredients();
 
         assert ingredients != null;
         mIngredientsAdapter.setData(ingredients);

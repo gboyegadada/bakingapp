@@ -15,14 +15,21 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements Callback<RecipeList> {
+public class MainActivity extends AppCompatActivity implements Callback<ArrayList<RecipeItem>> {
 
     private static String TAG = MainActivity.class.getSimpleName();
     public final static String DATA_URI = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
@@ -39,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements Callback<RecipeLi
     private boolean mMode;
 
     String mResponseString;
-    RecipeList mRecipeList;
+    ArrayList<RecipeItem> mRecipeList;
     RecyclerView mRecyclerView;
     RecipesRecyclerViewAdapter mRecipesAdapter;
     TextView mErrorMessageDisplay;
@@ -83,14 +90,18 @@ public class MainActivity extends AppCompatActivity implements Callback<RecipeLi
         mLoadingIndicator.setVisibility(View.VISIBLE);
         mIdlingResource.setIdleState(false);
 
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(DATA_URI)
-                .addConverterFactory(new CustomConverterFactory())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         RecipeAPI recipeAPI = retrofit.create(RecipeAPI.class);
 
-        Call<RecipeList> call = recipeAPI.getRecipes();
+        Call<ArrayList<RecipeItem>> call = recipeAPI.getRecipes();
         call.enqueue(this);
     }
 
@@ -122,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements Callback<RecipeLi
     }
 
     @Override
-    public void onResponse(Call<RecipeList> call, Response<RecipeList> response) {
+    public void onResponse(Call<ArrayList<RecipeItem>> call, Response<ArrayList<RecipeItem>> response) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mIdlingResource.setIdleState(true);
 
@@ -137,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements Callback<RecipeLi
     }
 
     @Override
-    public void onFailure(Call<RecipeList> call, Throwable t) {
+    public void onFailure(Call<ArrayList<RecipeItem>> call, Throwable t) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
         mIdlingResource.setIdleState(true);
