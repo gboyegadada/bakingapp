@@ -77,7 +77,7 @@ public class StepListActivity extends AppCompatActivity {
         assert mIngredientsRecyclerView != null;
 
         // isTablet will be set to true only in the
-        // large-screen values xml (res/values-sw900dp/bools.xml)
+        // large-screen values xml (res/values-w900dp/bools.xml)
         // and set to false in res/values/bools.xml
         // If set to true, then the
         // activity should be in two-pane mode.

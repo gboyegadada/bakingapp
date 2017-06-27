@@ -99,7 +99,6 @@ public class StepDetailFragment extends Fragment {
             String url = mItem.getVideoURL();
             if (!TextUtils.isEmpty(url)) {
                 mVideoUri = Uri.parse(url);
-                initializePlayer();
             }
         }
 
@@ -108,7 +107,7 @@ public class StepDetailFragment extends Fragment {
 
 
     private void initializePlayer() {
-        if (null != mExoPlayerView) {
+        if (null != mExoPlayerView || null == mVideoUri) {
             // Already initialized
             return;
         }
@@ -142,6 +141,29 @@ public class StepDetailFragment extends Fragment {
         mExoPlayer.prepare(videoSource);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        initializePlayer();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initializePlayer();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        releasePlayer();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
+    }
 
     /**
      * Release the player when the fragment activity is destroyed.
